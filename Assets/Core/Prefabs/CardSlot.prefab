@@ -569,7 +569,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isSelected: 0
   cardText: {fileID: 4274652076604478224}
-  animation: {fileID: 5141205929737786125}
+  anim: {fileID: 5141205929737786125}
 --- !u!111 &5141205929737786125
 Animation:
   m_ObjectHideFlags: 0

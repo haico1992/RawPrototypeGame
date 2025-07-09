@@ -8,7 +8,7 @@ public class CardSlotController : MonoBehaviour,IClickable
     public const int UninitalizeID = -1;
     public bool isSelected = false;
     [SerializeField] private TMPro.TMP_Text cardText;
-    [SerializeField] private Animation animation;
+    [SerializeField] private Animation anim;
 
     public int cardID { get; private set; } = UninitalizeID;
 
@@ -40,7 +40,7 @@ public class CardSlotController : MonoBehaviour,IClickable
 
     public void PlayAnimationScore()
     {
-        animation.Play("FlyAway");
+        anim.Play("FlyAway");
     }
 
 
@@ -53,15 +53,15 @@ public class CardSlotController : MonoBehaviour,IClickable
     {
         if (toFacingUp)
         {
-            animation[animation.clip.name].speed = 1;
-            if(animation[animation.clip.name].normalizedTime!=0)animation[animation.clip.name].normalizedTime = 1- animation[animation.clip.name].normalizedTime;
-            animation.Play();
+            anim[anim.clip.name].speed = 1;
+            if(anim[anim.clip.name].normalizedTime!=0)anim[anim.clip.name].normalizedTime = 1- anim[anim.clip.name].normalizedTime;
+            anim.Play();
         }
         else
         {
-            animation[animation.clip.name].speed = -1;
-            if(animation[animation.clip.name].normalizedTime==0) animation[animation.clip.name].normalizedTime =  1;;
-            animation.Play();
+            anim[anim.clip.name].speed = -1;
+            if(anim[anim.clip.name].normalizedTime==0) anim[anim.clip.name].normalizedTime =  1;;
+            anim.Play();
         }
 
 
@@ -71,15 +71,15 @@ public class CardSlotController : MonoBehaviour,IClickable
     {
         if (toFacingUp)
         {
-            animation[animation.clip.name].speed = 1;
-            animation[animation.clip.name].normalizedTime = 1;
-            animation.Play();
+            anim[anim.clip.name].speed = 1;
+            anim[anim.clip.name].normalizedTime = 1;
+            anim.Play();
         }
         else
         {
-            animation[animation.clip.name].speed = -1;
-            animation[animation.clip.name].normalizedTime =  0;;
-            animation.Play();
+            anim[anim.clip.name].speed = -1;
+            anim[anim.clip.name].normalizedTime =  0;;
+            anim.Play();
         }
 
 
