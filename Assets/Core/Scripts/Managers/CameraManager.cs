@@ -11,25 +11,18 @@ public class CameraManager : MonoBehaviour
     void Start()
     {
         targetCamera = Camera.main;
-        if (BoardManager.instance)
-        {
-            BoardManager.instance.OnSetUpBoard += OnBoardSetup;
-        }
+        EventManager.Subscribe(EventNames.OnSetupBoard, OnBoardSetup);
     }
 
 
     private void OnDisable()
     {
-        if (BoardManager.instance)
-        {
-            BoardManager.instance.OnSetUpBoard -= OnBoardSetup;
-        }
+        EventManager.Unsubscribe(EventNames.OnSetupBoard, OnBoardSetup);
     }
 
-    public void OnBoardSetup(Vector2Int boardSize)
+    private void OnBoardSetup(object boardSize)
     {
-        ResizeCameraByBoardSize(boardSize);
-
+        ResizeCameraByBoardSize((Vector2Int)boardSize);
     }
 
     /// <summary>

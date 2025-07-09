@@ -7,7 +7,6 @@ public class CardSlotController : MonoBehaviour,IClickable
 {
     public const int UninitalizeID = -1;
     public bool isSelected = false;
-    public UnityAction<CardSlotController> OnClickByPlayer;
     [SerializeField] private TMPro.TMP_Text cardText;
     [SerializeField] private Animation animation;
 
@@ -35,13 +34,8 @@ public class CardSlotController : MonoBehaviour,IClickable
     
     public void SetSelected(bool isSelected)
     {
-        if (isSelected == this.isSelected)
-        {
-            Debug.LogWarning("Trying to set the card into the same state");
-        }
         this.isSelected = isSelected;
         TurnCard(isSelected);
-       
     }
 
     public void PlayAnimationScore()
@@ -52,10 +46,7 @@ public class CardSlotController : MonoBehaviour,IClickable
 
     public void Interact()
     {
-        if (OnClickByPlayer!=null)
-        {
-            OnClickByPlayer.Invoke(this);
-        }
+        EventManager.Trigger(EventNames.OnClickObject,(this));
     }
 
     public void TurnCard(bool toFacingUp)

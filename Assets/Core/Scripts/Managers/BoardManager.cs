@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class BoardManager : MonoBehaviour
 {
@@ -11,7 +13,7 @@ public class BoardManager : MonoBehaviour
     [SerializeField] public float cardOffsetY = 1.33f;
     [SerializeField] public Vector2Int boardSize = new Vector2Int(1, 1);
 
-    public UnityAction<Vector2Int> OnSetUpBoard;
+  
     private List<CardSlotController> listCardObjects = new List<CardSlotController>(); 
     private Dictionary<int, int> cardIndexWithCount = new Dictionary<int, int>();
 
@@ -26,6 +28,18 @@ public class BoardManager : MonoBehaviour
         SetupBoard(this.boardSize);
     }
 
+    private void OnEnable()
+    {
+        EventManager.Subscribe(EventNames.OnClickObject,GameplayManager.instance.OnClickCard);
+
+    }
+
+    private void OnDisable()
+    {
+        EventManager.Unsubscribe(EventNames.OnClickObject,GameplayManager.instance.OnClickCard);
+
+    }
+
 
     /// <summary>
     /// Generate card objects for a new game
@@ -34,7 +48,7 @@ public class BoardManager : MonoBehaviour
     public void SetupBoard(Vector2Int boardSize)
     {
         SetupBoard(boardSize.x, boardSize.y);
-        OnSetUpBoard?.Invoke(boardSize);
+        EventManager.Trigger(EventNames.OnSetupBoard,boardSize);
     }
 
     /// <summary>
@@ -45,7 +59,6 @@ public class BoardManager : MonoBehaviour
     /// <param name="row"></param>
     public void SetupBoard(int column, int row)
     {
-        
         cardIndexWithCount = GenerateCardIndex(column * row / 2);
         var cardPositions = GenerateCardPositions(column, row, this.cardOffsetX,this.cardOffsetY);
         foreach (var position in cardPositions)
@@ -57,8 +70,8 @@ public class BoardManager : MonoBehaviour
                 listCardObjects.Add(slot);
                 var cardInfo= PullRandomIndexFromCardList(cardIndexWithCount);
                 slot.Setup(cardInfo);
-                slot.OnClickByPlayer = null;
-                slot.OnClickByPlayer += GameplayManager.instance.OnCLickCard;
+              
+               
             }
 
            
@@ -100,17 +113,31 @@ public class BoardManager : MonoBehaviour
                 positions.Add(new Vector2(x, y));
             }
         }
-
+        Shuffle(positions);
         return positions;
     }
 
     private static Dictionary<int, int> GenerateCardIndex(int indexCount)
     {
         Dictionary<int, int> indexes = new Dictionary<int, int>();
-        for (int i = 0; i < indexCount; i++)
+        int indexTotal = 0;
+        while (indexTotal < indexCount)
         {
-            indexes.TryAdd(i, 2);
+            if (indexes.TryAdd(Random.Range(0, indexCount*3), 2))
+            {
+                indexTotal++;
+            }
         }
         return indexes;
     }
+    
+    public static void Shuffle<T>(IList<T> list)
+    {
+        for (int i = list.Count - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1); 
+            (list[i], list[j]) = (list[j], list[i]);
+        }
+    }
+
 }

@@ -15,8 +15,9 @@ public class GameplayManager : MonoBehaviour
     }
 
 
-    public void OnCLickCard(CardSlotController cardObj)
+    public void OnClickCard(object obj)
     {
+        var cardObj = (CardSlotController)obj;
         if (!selectingCard) //No selectedCard
         {
             SelectCard(cardObj);
@@ -26,7 +27,7 @@ public class GameplayManager : MonoBehaviour
         }
         else // Selected a card
         {
-            if (CheckForSuccess(cardObj)) //correctly
+            if (CheckForSuccess(cardObj)) 
             {
                 //TODO: scoreUp
                 //TODO: Animate
@@ -35,7 +36,7 @@ public class GameplayManager : MonoBehaviour
                 //TODO: update data
                 selectingCard = null;
             }
-            else//incorrectly
+            else
             {
 
                 UnSelectCard(cardObj); 
