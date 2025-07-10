@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class EventManager
 {
@@ -22,8 +23,11 @@ public static class EventManager
     public static void Trigger(string eventName, object parameter = null)
     {
         if (eventTable.ContainsKey(eventName))
+        {
             eventTable[eventName]?.Invoke(parameter);
-    }
+            Debug.Log("Event " + eventName + " was triggered");
+        }
+}
 }
 
 public static class EventNames
@@ -39,4 +43,6 @@ public static class EventNames
     public const string OnReplay = "Replay";
     public const string OnSaveAndQuit = "OnSaveAndQuit";
     public const string OnToTitle = "OnToTitle";
+    public const string OnContinue = "OnContinue";
+    public const string OnGameStateLoaded = "OnGameStateLoaded";
 }

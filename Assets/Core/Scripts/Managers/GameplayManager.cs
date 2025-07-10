@@ -12,6 +12,12 @@ public class GameplayManager : MonoBehaviour
     public void Awake()
     {
         instance = this;
+        EventManager.Subscribe(EventNames.OnClickObject,OnClickCard);
+    }
+
+    public void OnDestroy()
+    {
+        EventManager.Unsubscribe(EventNames.OnClickObject,OnClickCard);
     }
 
 

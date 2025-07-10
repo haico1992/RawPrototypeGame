@@ -13,7 +13,7 @@ public class GameStateManager : MonoBehaviour
     public int currentLife = 0;
     public int currentCombo = 0;
     public bool IsInGameplay {get; private set;}
-
+    private GameStats loadedGameStats = null;
     private void Awake()
     {
         instance = this;
@@ -21,8 +21,25 @@ public class GameStateManager : MonoBehaviour
         EventManager.Subscribe(EventNames.OnFalsePair,OnFalseToPair);
         EventManager.Subscribe(EventNames.OnGameOver, OnGameOver);
         EventManager.Subscribe(EventNames.OnReplay, OnReplay);
-        EventManager.Subscribe(EventNames.OnReplay, OnSaveAndQuit);
+        EventManager.Subscribe(EventNames.OnSaveAndQuit, OnSaveAndQuit);
+        EventManager.Subscribe(EventNames.OnContinue, OnContinue);
+        EventManager.Subscribe(EventNames.OnGameStateLoaded,OnGameStateLoaded);
     }
+
+    private void OnGameStateLoaded(object obj)
+    {
+       var gamestate= obj as GameStats;
+       if (gamestate != null)
+       {
+           scoreBase = gamestate.scoreBase;
+           currentScore = gamestate.score;
+           currentLife = gamestate.life;
+           currentCombo = gamestate.combo;
+       }
+       
+       
+    }
+
 
     private void OnSaveAndQuit(object obj)
     {
@@ -32,8 +49,11 @@ public class GameStateManager : MonoBehaviour
         currentStats.combo = currentCombo;
         currentStats.scoreBase = scoreBase;
         //Todo: serialize this;
+        currentStats.cards = BoardManager.instance.GetCurrentCardsState();
+        currentStats.boardSize = BoardManager.instance.boardSize;
         GameStatsManager.SaveCurrentStats(currentStats);
         EventManager.Trigger(EventNames.OnToTitle);
+        IsInGameplay = false;
     }
 
     private void OnGameOver(object obj)
@@ -48,9 +68,11 @@ public class GameStateManager : MonoBehaviour
     }
 
 
-    void Start()
+    void OnContinue(object o)
     {
-        EventManager.Trigger(EventNames.OnReplay); //Game Start
+        loadedGameStats = GameStatsManager.LoadCurrentStats();
+        EventManager.Trigger(EventNames.OnGameStateLoaded, loadedGameStats);
+        IsInGameplay = true;
     }
 
     void InitGameState()
@@ -106,11 +128,15 @@ public class GameStats
     public double score = 0;
     public int life = 10;
     public int combo = 0;
+    public Vector2Int boardSize= new Vector2Int(5,5);
+    public List<CardSlotController.CardState> cards=null;
 }
 
-public class GameStatsManager
+
+
+public static class GameStatsManager
 {
-    public static GameStats LoadedStats ;
+    private static GameStats LoadedStats ;
 
     public static GameStats LoadDefaultStats()
     {
@@ -143,7 +169,7 @@ public class GameStatsManager
     public static GameStats LoadCurrentStats()
     {
         string path = Application.persistentDataPath + "/saved_stats.json";
-
+        if (!File.Exists(path)) return null;
 #if UNITY_EDITOR || UNITY_STANDALONE
         string json = File.ReadAllText(path);
 #elif UNITY_ANDROID

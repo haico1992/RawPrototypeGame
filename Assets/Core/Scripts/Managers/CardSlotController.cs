@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,15 @@ public class CardSlotController : MonoBehaviour,IClickable
         Setup(cardID);
     }
 
+    public CardState GetCardState()
+    {
+        CardState cardState= new CardState();
+        cardState.cardID = cardID;
+        cardState.isSelected = isSelected;
+        cardState.cardPos = new Vector2(this.transform.position.x,this.transform.position.z );
+        return cardState;
+    }
+
     /// <summary>
     /// Update the cardObj with cardInfo, card with UninitalizeID will be hidden;
     /// </summary>
@@ -32,9 +42,14 @@ public class CardSlotController : MonoBehaviour,IClickable
         this.gameObject.SetActive(cardID != UninitalizeID);
     }
     
+    public void Setup(CardState cardInfo)
+    {
+        Setup(cardInfo.cardID, cardInfo.isSelected);
+    }
+    
     public void SetSelected(bool isSelected)
     {
-        this.isSelected = isSelected;
+        this.isSelected=isSelected;
         TurnCard(isSelected);
     }
 
@@ -86,6 +101,16 @@ public class CardSlotController : MonoBehaviour,IClickable
         }
 
 
+    } 
+   [Serializable]
+    public class CardState
+    {
+        public int cardID = UninitalizeID;
+        public bool isSelected =false;
+        public Vector2 cardPos = Vector2.zero;
     }
+
+  
 }
+
 

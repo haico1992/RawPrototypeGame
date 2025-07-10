@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager instance;
+
     [SerializeField] public GameObject CardPrefab;
     [SerializeField] public float cardOffsetX = 1.33f;
     [SerializeField] public float cardOffsetY = 1.33f;
@@ -21,26 +22,35 @@ public class BoardManager : MonoBehaviour
     void Awake()
     {
         instance = this;
+        EventManager.Subscribe(EventNames.OnGameStateLoaded,OnGameStateLoaded);
+        EventManager.Subscribe(EventNames.OnReplay,OnReplay);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnReplay(object obj)
     {
         SetupBoard(this.boardSize);
     }
 
-    private void OnEnable()
+    private void OnGameStateLoaded(object obj)
     {
-        EventManager.Subscribe(EventNames.OnClickObject,GameplayManager.instance.OnClickCard);
-
+        var gameState= obj as GameStats;
+        if (gameState != null)
+        {
+           SetupBoardByGameState(gameState);
+        }
     }
 
-    private void OnDisable()
+
+
+    public List<CardSlotController.CardState> GetCurrentCardsState()
     {
-        EventManager.Unsubscribe(EventNames.OnClickObject,GameplayManager.instance.OnClickCard);
-
+        List<CardSlotController.CardState> list = new List<CardSlotController.CardState>();
+        foreach (var cardObject in listCardObjects)
+        {
+            list.Add(cardObject.GetCardState());
+        }
+        return list;
     }
-
 
     /// <summary>
     /// Generate card objects for a new game
@@ -60,6 +70,7 @@ public class BoardManager : MonoBehaviour
     /// <param name="row"></param>
     public void SetupBoard(int column, int row)
     {
+        
         cardIndexWithCount = GenerateCardIndex(column * row / 2);
         var cardPositions = GenerateCardPositions(column, row, this.cardOffsetX,this.cardOffsetY);
       
@@ -80,6 +91,32 @@ public class BoardManager : MonoBehaviour
             listCardObjects[i].Setup(cardInfo);
         }
     }
+    
+    /// <summary>
+    /// Generate board from a saved gamestate
+    /// </summary>
+    /// <param name="gameState"></param>
+    private void SetupBoardByGameState(GameStats gameState)
+    {
+        EventManager.Trigger(EventNames.OnSetupBoard,gameState.boardSize);
+        for (int i = 0; i < gameState.cards.Count; i++)
+        {
+            var position = gameState.cards[i].cardPos;
+            if (listCardObjects.Count< i+1 )
+            {
+                var cardObj = Instantiate(CardPrefab, new Vector3(position.x, 0, position.y), Quaternion.identity);
+
+                if (cardObj.TryGetComponent(out CardSlotController slot))
+                {
+                    listCardObjects.Add(slot);
+                }
+            }
+            
+            var cardInfo =  gameState.cards[i];
+            listCardObjects[i].Setup(cardInfo);
+        }
+    }
+    
 
 
     
