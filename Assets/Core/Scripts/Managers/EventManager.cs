@@ -35,4 +35,5 @@ public static class EventNames
     public const string OnScoreUpdate = "OnScoreUpdate";
     public const string OnLifeUpdate = "OnLifeUpdate";
     public const string OnComboUpdate = "OnComboUpdate";
+    public const string OnGameOver = "OnGameOver";
 }

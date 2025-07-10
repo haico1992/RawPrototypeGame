@@ -46,5 +46,9 @@ public class GameStateManager : MonoBehaviour
         currentLife -= 1;
         EventManager.Trigger(EventNames.OnLifeUpdate,currentLife);
         EventManager.Trigger(EventNames.OnComboUpdate,currentCombo);
+        if (currentLife <= 0)
+        {
+            EventManager.Trigger(EventNames.OnGameOver,currentScore);
+        }
     }
 }
