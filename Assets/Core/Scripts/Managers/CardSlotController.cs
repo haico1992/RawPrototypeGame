@@ -17,10 +17,7 @@ public class CardSlotController : MonoBehaviour,IClickable
     
 
     // Start is called before the first frame update
-    void Start()
-    {
-        Setup(cardID);
-    }
+    
 
     public CardState GetCardState()
     {
@@ -36,10 +33,12 @@ public class CardSlotController : MonoBehaviour,IClickable
     /// </summary>
     /// <param name="cardID"></param>
     public void Setup(int cardID,bool faceUp=false) {
-        this.cardID = cardID;
-        cardText.text = this.cardID.ToString();
-        TurnCardInstantly(faceUp);
         this.gameObject.SetActive(cardID != UninitalizeID);
+        this.cardID = cardID;
+        this.isSelected = faceUp;
+        this.cardText.text = this.cardID.ToString();
+        this.gameObject.name = "Card " + cardID;
+        TurnCardInstantly(faceUp);
     }
     
     public void Setup(CardState cardInfo)
@@ -55,6 +54,7 @@ public class CardSlotController : MonoBehaviour,IClickable
 
     public void PlayAnimationScore()
     {
+        this.isSelected = false;
         anim.Play("FlyAway");
     }
 
@@ -87,20 +87,8 @@ public class CardSlotController : MonoBehaviour,IClickable
     
     public void TurnCardInstantly(bool toFacingUp)
     {
-        if (toFacingUp)
-        {
-            anim[anim.clip.name].speed = 1;
-            anim[anim.clip.name].normalizedTime = 1;
-            anim.Play();
-        }
-        else
-        {
-            anim[anim.clip.name].speed = -1;
-            anim[anim.clip.name].normalizedTime =  0;;
-            anim.Play();
-        }
-
-
+        if(!toFacingUp)Debug.Log("Face down " +gameObject );
+        this.gameObject.transform.eulerAngles = toFacingUp ? new Vector3(0, 0, 0) : new Vector3(180, 0, 0);
     } 
    [Serializable]
     public class CardState

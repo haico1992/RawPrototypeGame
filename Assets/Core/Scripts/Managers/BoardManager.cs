@@ -28,6 +28,7 @@ public class BoardManager : MonoBehaviour
 
     private void OnReplay(object obj)
     {
+        this.boardSize = UIManager.instance.GetBoardSizeFromUI();
         SetupBoard(this.boardSize);
     }
 
@@ -76,10 +77,10 @@ public class BoardManager : MonoBehaviour
       
         for (int i = 0; i < cardPositions.Count; i++)
         {
-            var position = cardPositions[i];
+            Vector3 cardPos = new Vector3(cardPositions[i].x, 0, cardPositions[i].y);
             if (listCardObjects.Count< i+1 )
             {
-                var cardObj = Instantiate(CardPrefab, new Vector3(position.x, 0, position.y), Quaternion.identity);
+                var cardObj = Instantiate(CardPrefab, cardPos, Quaternion.identity);
 
                 if (cardObj.TryGetComponent(out CardSlotController slot))
                 {
@@ -87,8 +88,9 @@ public class BoardManager : MonoBehaviour
                 }
             }
             
-            var cardInfo = PullRandomIndexFromCardList(cardIndexWithCount);
-            listCardObjects[i].Setup(cardInfo);
+            var cardIndex = PullRandomIndexFromCardList(cardIndexWithCount);
+            listCardObjects[i].Setup(cardIndex);
+            listCardObjects[i].transform.position = cardPos;
         }
     }
     
@@ -98,7 +100,7 @@ public class BoardManager : MonoBehaviour
     /// <param name="gameState"></param>
     private void SetupBoardByGameState(GameStats gameState)
     {
-        EventManager.Trigger(EventNames.OnSetupBoard,gameState.boardSize);
+      
         for (int i = 0; i < gameState.cards.Count; i++)
         {
             var position = gameState.cards[i].cardPos;
@@ -114,7 +116,9 @@ public class BoardManager : MonoBehaviour
             
             var cardInfo =  gameState.cards[i];
             listCardObjects[i].Setup(cardInfo);
+            if (listCardObjects[i].isSelected) GameplayManager.instance.SetSelectingCard(listCardObjects[i]);
         }
+        EventManager.Trigger(EventNames.OnSetupBoard,gameState.boardSize);
     }
     
 

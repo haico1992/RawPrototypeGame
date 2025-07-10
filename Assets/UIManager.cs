@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager instance;
    
     [SerializeField] HudController hudController;
     [SerializeField] GameObject gameOverPanel;
@@ -17,6 +18,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] TMPro.TMP_Dropdown boardSizeSelection;
     private void Awake()
     {
+        instance = this;
         EventManager.Subscribe(EventNames.OnScoreUpdate,OnScoreUpdate);
         EventManager.Subscribe(EventNames.OnLifeUpdate,OnLifeUpdate);
         EventManager.Subscribe(EventNames.OnComboUpdate,OnComboUpdate);
@@ -47,8 +49,13 @@ public class UIManager : MonoBehaviour
 
     private void OnSelectBoardSize(int index)
     {
-        int size = 5-boardSizeSelection.value; //just for display
-        BoardManager.instance.boardSize = new Vector2Int(size, size);
+        BoardManager.instance.boardSize = GetBoardSizeFromUI();
+    }
+
+    public Vector2Int GetBoardSizeFromUI()
+    {
+        int size = 5-boardSizeSelection.value;
+        return  new Vector2Int(size, size);
     }
 
     private void OnGameStateLoaded(object obj)

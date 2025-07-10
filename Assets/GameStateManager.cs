@@ -36,8 +36,6 @@ public class GameStateManager : MonoBehaviour
            currentLife = gamestate.life;
            currentCombo = gamestate.combo;
        }
-       
-       
     }
 
 

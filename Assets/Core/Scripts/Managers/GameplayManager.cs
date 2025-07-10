@@ -13,11 +13,28 @@ public class GameplayManager : MonoBehaviour
     {
         instance = this;
         EventManager.Subscribe(EventNames.OnClickObject,OnClickCard);
+        EventManager.Subscribe(EventNames.OnSaveAndQuit,OnNewGame);
+        EventManager.Subscribe(EventNames.OnReplay,OnNewGame);
+    }
+
+    private void OnNewGame(object obj)
+    {
+        ClearGameData();
+    }
+
+    void ClearGameData()
+    {
+        selectingCard = null;
     }
 
     public void OnDestroy()
     {
         EventManager.Unsubscribe(EventNames.OnClickObject,OnClickCard);
+    }
+
+    public void SetSelectingCard(CardSlotController card)
+    {
+        selectingCard = card;
     }
 
 
