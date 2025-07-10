@@ -30,4 +30,9 @@ public static class EventNames
 {
     public const string OnClickObject = "OnClickObject";
     public const string OnSetupBoard = "OnSetupBoard";
+    public const string OnScorePair = "OnScorePair";
+    public const string OnFalsePair = "OnFalsePair";
+    public const string OnScoreUpdate = "OnScoreUpdate";
+    public const string OnLifeUpdate = "OnLifeUpdate";
+    public const string OnComboUpdate = "OnComboUpdate";
 }

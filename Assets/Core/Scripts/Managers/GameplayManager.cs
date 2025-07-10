@@ -35,13 +35,15 @@ public class GameplayManager : MonoBehaviour
                 selectingCard.PlayAnimationScore();
                 //TODO: update data
                 selectingCard = null;
+                EventManager.Trigger(EventNames.OnScorePair, cardObj);
             }
             else
             {
-
+               
                 UnSelectCard(cardObj); 
                 UnSelectCard(selectingCard);
                 selectingCard = null;
+                EventManager.Trigger(EventNames.OnFalsePair, cardObj);
             }
         }
 
