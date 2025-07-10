@@ -10,7 +10,7 @@ public class CardSlotController : MonoBehaviour,IClickable
     [SerializeField] private TMPro.TMP_Text cardText;
     [SerializeField] private Animation anim;
 
-    public int cardID { get; private set; } = UninitalizeID;
+    [SerializeField]public int cardID { get; private set; } = UninitalizeID;
 
 
     
@@ -46,8 +46,11 @@ public class CardSlotController : MonoBehaviour,IClickable
 
     public void Interact()
     {
-        EventManager.Trigger(EventNames.OnClickObject,(this));
-    }
+        if (GameStateManager.instance.IsInGameplay)
+        {
+            EventManager.Trigger(EventNames.OnClickObject, (this));
+        }
+}
 
     public void TurnCard(bool toFacingUp)
     {

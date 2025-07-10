@@ -15,7 +15,8 @@ public class BoardManager : MonoBehaviour
 
   
     private List<CardSlotController> listCardObjects = new List<CardSlotController>(); 
-    private Dictionary<int, int> cardIndexWithCount = new Dictionary<int, int>();
+    
+    private Dictionary<int, int> cardIndexWithCount = new Dictionary<int, int>(); //Card and their count
 
     void Awake()
     {
@@ -61,23 +62,27 @@ public class BoardManager : MonoBehaviour
     {
         cardIndexWithCount = GenerateCardIndex(column * row / 2);
         var cardPositions = GenerateCardPositions(column, row, this.cardOffsetX,this.cardOffsetY);
-        foreach (var position in cardPositions)
+      
+        for (int i = 0; i < cardPositions.Count; i++)
         {
-            var cardObj= Instantiate(CardPrefab, new Vector3(position.x,0,position.y), Quaternion.identity);
-
-            if (cardObj.TryGetComponent(out CardSlotController slot))
+            var position = cardPositions[i];
+            if (listCardObjects.Count< i+1 )
             {
-                listCardObjects.Add(slot);
-                var cardInfo= PullRandomIndexFromCardList(cardIndexWithCount);
-                slot.Setup(cardInfo);
-              
-               
+                var cardObj = Instantiate(CardPrefab, new Vector3(position.x, 0, position.y), Quaternion.identity);
+
+                if (cardObj.TryGetComponent(out CardSlotController slot))
+                {
+                    listCardObjects.Add(slot);
+                }
             }
-
-           
+            
+            var cardInfo = PullRandomIndexFromCardList(cardIndexWithCount);
+            listCardObjects[i].Setup(cardInfo);
         }
-
     }
+
+
+    
     
 /// <summary>
 /// Dictionary<cardInfo, cardCount>

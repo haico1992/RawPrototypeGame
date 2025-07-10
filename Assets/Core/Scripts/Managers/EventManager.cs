@@ -36,4 +36,7 @@ public static class EventNames
     public const string OnLifeUpdate = "OnLifeUpdate";
     public const string OnComboUpdate = "OnComboUpdate";
     public const string OnGameOver = "OnGameOver";
+    public const string OnReplay = "Replay";
+    public const string OnSaveAndQuit = "OnSaveAndQuit";
+    public const string OnToTitle = "OnToTitle";
 }
