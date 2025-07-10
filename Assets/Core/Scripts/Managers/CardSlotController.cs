@@ -8,6 +8,7 @@ public class CardSlotController : MonoBehaviour,IClickable
 {
     public const int UninitalizeID = -1;
     public bool isSelected = false;
+    public bool isPaired = false;
     [SerializeField] private TMPro.TMP_Text cardText;
     [SerializeField] private Animation anim;
 
@@ -21,9 +22,10 @@ public class CardSlotController : MonoBehaviour,IClickable
 
     public CardState GetCardState()
     {
-        CardState cardState= new CardState();
+        CardState cardState = new CardState();
         cardState.cardID = cardID;
         cardState.isSelected = isSelected;
+        cardState.paired = isPaired;
         cardState.cardPos = new Vector2(this.transform.position.x,this.transform.position.z );
         return cardState;
     }
@@ -48,13 +50,14 @@ public class CardSlotController : MonoBehaviour,IClickable
     
     public void SetSelected(bool isSelected)
     {
-        this.isSelected=isSelected;
+        this.isSelected = isSelected;
         TurnCard(isSelected);
     }
 
-    public void PlayAnimationScore()
+    public void SwitchToPairedState()
     {
         this.isSelected = false;
+        this.isPaired = true;
         anim.Play("FlyAway");
     }
 
@@ -96,6 +99,7 @@ public class CardSlotController : MonoBehaviour,IClickable
         public int cardID = UninitalizeID;
         public bool isSelected =false;
         public Vector2 cardPos = Vector2.zero;
+        public bool paired = false;
     }
 
   

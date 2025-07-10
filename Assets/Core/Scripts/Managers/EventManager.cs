@@ -45,4 +45,5 @@ public static class EventNames
     public const string OnToTitle = "OnToTitle";
     public const string OnContinue = "OnContinue";
     public const string OnGameStateLoaded = "OnGameStateLoaded";
+    public const string OnVictorious = "OnVictorious";
 }

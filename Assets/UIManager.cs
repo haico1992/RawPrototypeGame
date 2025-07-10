@@ -11,10 +11,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] HudController hudController;
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] GameObject gameTitlePanel;
+    [SerializeField] GameObject victoryPanel;
     [SerializeField] Button replayButton;
     [SerializeField] Button saveAndQuitButton;
     [SerializeField] Button gameStartButton;
     [SerializeField] Button continueButton;
+    [SerializeField] Button victoryButton;
     [SerializeField] TMPro.TMP_Dropdown boardSizeSelection;
     private void Awake()
     {
@@ -27,12 +29,19 @@ public class UIManager : MonoBehaviour
         EventManager.Subscribe(EventNames.OnContinue,OnReplay);
         EventManager.Subscribe(EventNames.OnSaveAndQuit,OnSaveAndQuit);
         EventManager.Subscribe(EventNames.OnGameStateLoaded,OnGameStateLoaded);
+        EventManager.Subscribe(EventNames.OnVictorious,OnVictorious);
         
-        replayButton.onClick.AddListener(()=>EventManager.Trigger(EventNames.OnReplay));
-        saveAndQuitButton.onClick.AddListener(()=>EventManager.Trigger(EventNames.OnSaveAndQuit));
-        gameStartButton.onClick.AddListener(()=>EventManager.Trigger(EventNames.OnReplay));
-        continueButton.onClick.AddListener(()=>EventManager.Trigger(EventNames.OnContinue));
-        boardSizeSelection.onValueChanged.AddListener(OnSelectBoardSize);
+        replayButton?.onClick.AddListener(()=>EventManager.Trigger(EventNames.OnReplay));
+        victoryButton?.onClick.AddListener(()=>EventManager.Trigger(EventNames.OnReplay));
+        saveAndQuitButton?.onClick.AddListener(()=>EventManager.Trigger(EventNames.OnSaveAndQuit));
+        gameStartButton?.onClick.AddListener(()=>EventManager.Trigger(EventNames.OnReplay));
+        continueButton?.onClick.AddListener(()=>EventManager.Trigger(EventNames.OnContinue));
+        boardSizeSelection?.onValueChanged.AddListener(OnSelectBoardSize);
+    }
+
+    private void OnVictorious(object obj)
+    {
+       victoryPanel.gameObject.SetActive(true);
     }
 
     private void OnContinue(object obj)

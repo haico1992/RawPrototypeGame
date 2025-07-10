@@ -52,11 +52,8 @@ public class GameplayManager : MonoBehaviour
         {
             if (CheckForSuccess(cardObj)) 
             {
-                //TODO: scoreUp
-                //TODO: Animate
-                cardObj.PlayAnimationScore();
-                selectingCard.PlayAnimationScore();
-                //TODO: update data
+                cardObj.SwitchToPairedState();
+                selectingCard.SwitchToPairedState();
                 selectingCard = null;
                 EventManager.Trigger(EventNames.OnScorePair, cardObj);
             }

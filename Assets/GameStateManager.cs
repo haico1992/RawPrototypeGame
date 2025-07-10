@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class GameStateManager : MonoBehaviour
@@ -46,7 +47,6 @@ public class GameStateManager : MonoBehaviour
         currentStats.life = currentLife;
         currentStats.combo = currentCombo;
         currentStats.scoreBase = scoreBase;
-        //Todo: serialize this;
         currentStats.cards = BoardManager.instance.GetCurrentCardsState();
         currentStats.boardSize = BoardManager.instance.boardSize;
         GameStatsManager.SaveCurrentStats(currentStats);
@@ -96,26 +96,39 @@ public class GameStateManager : MonoBehaviour
         CardSlotController cardSlotController = score as CardSlotController;
         if (cardSlotController)
         {
-            
             currentScore += scoreBase * Math.Pow(2, currentCombo);
             currentLife++;
+            EventManager.Trigger(EventNames.OnLifeUpdate,currentLife);
             EventManager.Trigger(EventNames.OnScoreUpdate,currentScore);
             EventManager.Trigger(EventNames.OnComboUpdate,currentCombo);
             currentCombo++;
-            
+        }
+
+        if (CheckForVictory())
+        {
+            EventManager.Trigger(EventNames.OnVictorious);
         }
     }
-    
+
+   
+
     private void OnFalseToPair(object obj)
     {
         currentCombo = 0;
-        currentLife -= 1;
+        currentLife--;
         EventManager.Trigger(EventNames.OnLifeUpdate,currentLife);
         EventManager.Trigger(EventNames.OnComboUpdate,currentCombo);
         if (currentLife <= 0)
         {
             EventManager.Trigger(EventNames.OnGameOver,currentScore);
         }
+    }
+    
+    bool CheckForVictory()
+    {
+        var cardsState = BoardManager.instance.GetCurrentCardsState();
+        bool notAllPaired = cardsState.Any(card => !card.paired && card.cardID!= -1);
+        return !notAllPaired;
     }
 }
 
